@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Writing & Chat Tools</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom style for the active tool button */
+        .tool-button.active {
+            border-color: #2563eb; /* blue-600 */
+            background-color: #eff6ff; /* blue-50 */
+            box-shadow: 0 0 0 2px #dbeafe; /* blue-100 */
+        }
+        /* Style for copy-to-clipboard button */
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: opacity 0.2s ease-in-out;
+        }
+        #output-container:hover .copy-btn {
+            opacity: 1;
+        }
+        .copy-btn:hover {
+            background-color: #e5e7eb;
+        }
+        .copy-btn.copied {
+            background-color: #10b981; /* green-500 */
+            color: white;
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl mx-auto">
+        <!-- Main Content Card -->
+        <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-10">
+            
+            <!-- SECTION 1: AI WRITING TOOLS -->
+            <div id="ai-writer-section" class="mb-10">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-2">✨ AI Writing Tools</h2>
+                <p class="text-gray-600 mb-6">Select a tool, enter your text below, and click "Generate".</p>
+                
+                <!-- Tool Selection Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                    <!-- Paraphrasing Tool -->
+                    <button class="tool-button flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 hover:shadow-md transition-all duration-200" data-tool="paraphrase">
+                        <svg class="w-10 h-10 text-green-600 mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M14 2V8H20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 18C14.2091 18 16 16.2091 16 14C16 11.7909 14.2091 10 12 10C9.79086 10 8 11.7909 8 14C8 14.9 8.3 15.7 8.8 16.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M10 13.5L8 15.5L10 17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="font-medium text-sm text-gray-700">Paraphrasing Tool</span>
+                    </button>
+        
+                    <!-- Grammar Checker -->
+                    <button class="tool-button flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 hover:shadow-md transition-all duration-200" data-tool="grammar">
+                        <svg class="w-10 h-10 text-red-600 mb-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M9.5 15.5L12 9.5L14.5 15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M10.75 14H13.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16 10L17 11L19 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="font-medium text-sm text-gray-700">Grammar Checker</span>
+                    </button>
+        
+                    <!-- AI Detector -->
+                    <button class="tool-button flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 hover:shadow-md transition-all duration-200" data-tool="detector">
+                        <svg class="w-10 h-10 text-yellow-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+                        </svg>
+                        <span class="font-medium text-sm text-gray-700">AI Detector</span>
+                    </button>
+        
+                    <!-- Plagiarism Checker -->
+                    <button class="tool-button flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 hover:shadow-md transition-all duration-200" data-tool="plagiarism">
+                        <svg class="w-10 h-10 text-orange-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18.75 18.75l-1.875-1.875" />
+                        </svg>
+                        <span class="font-medium text-sm text-gray-700">Plagiarism Checker</span>
+                    </button>
+        
+                    <!-- AI Humanizer -->
+                    <button class="tool-button flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 hover:shadow-md transition-all duration-200" data-tool="humanizer">
+                        <svg class="w-10 h-10 text-teal-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm4.5 0c0 .414-.168.75-.375.75S13.5 10.164 13.5 9.75s.168-.75.375-.75.375.336.375.75Z" />
+                        </svg>
+                        <span class="font-medium text-sm text-gray-700">AI Humanizer</span>
+                    </button>
+        
+                    <!-- AI Chat -->
+                    <button class="tool-button flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 hover:shadow-md transition-all duration-200" data-tool="chat" id="ai-chat-button">
+                        <svg class="w-10 h-10 text-blue-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.76 9.76 0 0 1-2.53-.385A5.25 5.25 0 0 0 16.5 21c0-1.867.728-3.64 2.047-4.953a8.901 8.901 0 0 0-3.934-1.282A8.963 8.963 0 0 0 12 14.25c-2.8 0-5.362-1.27-7.071-3.247A8.91 8.91 0 0 0 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
+                        </svg>
+                        <span class="font-medium text-sm text-gray-700">AI Chat</span>
+                    </button>
+                    
+                    <!-- Translate -->
+                    <button class="tool-button flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 hover:shadow-md transition-all duration-200" data-tool="translate">
+                        <svg class="w-10 h-10 text-indigo-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c1.35 0 2.46-.45 3.22-1.258m-6.44 0C6.34 19.3 7.45 19.75 8.8 19.75M12 4.5A9.004 9.004 0 0 0 3.284 11.251M12 4.5A9.004 9.004 0 0 1 20.716 11.251M12 4.5c-1.35 0-2.46.45-3.22 1.258m6.44 0C17.66 5.7 16.55 5.25 15.2 5.25M5.25 12a6.75 6.75 0 1 1 13.5 0 6.75 6.75 0 0 1-13.5 0Z" />
+                        </svg>
+                        <span class="font-medium text-sm text-gray-700">Translate</span>
+                    </button>
+                    
+                    <!-- Summarizer -->
+                    <button class="tool-button flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 hover:shadow-md transition-all duration-200" data-tool="summarize">
+                        <svg class="w-10 h-10 text-purple-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5" />
+                        </svg>
+                        <span class="font-medium text-sm text-gray-700">Summarizer</span>
+                    </button>
+                </div>
+                
+                <!-- Input/Output Textareas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                    <textarea id="input-text" class="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Enter your text here..."></textarea>
+                    
+                    <div id="output-container" class="relative">
+                        <textarea id="output-text" class="w-full h-48 p-4 border border-gray-300 rounded-lg resize-none bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="AI-generated text will appear here..." readonly></textarea>
+                        <button id="copy-button" class="copy-btn">Copy</button>
+                    </div>
+                </div>
+                
+                <!-- Generate Button -->
+                <button id="generate-button" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-400">
+                    Generate
+                </button>
+                <div id="writer-status" class="mt-4 text-center text-gray-600 h-6"></div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="border-gray-200 my-10">
+
+            <!-- SECTION 2: AI CHAT (WITH GOOGLE SEARCH) -->
+            <div id="ai-chat-section">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">🤖 AI Chat (with Google Search)</h2>
+                <p class="text-gray-600 mb-4">Get real-time answers from the web, powered by Gemini. This feature uses Google Search grounding to provide up-to-date information.</p>
+                
+                <!-- Input and Button -->
+                <div class="flex items-center w-full p-2 bg-white border border-gray-200 rounded-full shadow-lg space-x-2">
+                    <!-- Shield Icon -->
+                    <svg class="w-6 h-6 text-gray-400 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.333 9-6.03 9-11.623 0-1.42-.31-2.772-.855-4.014m-1.902-3.419A9.975 9.975 0 0 0 12 2.25C9.042 2.25 6.336 3.696 4.646 5.86m14.708 0a9.975 9.975 0 0 0-4.646-3.61m-4.708 0a9.975 9.975 0 0 0-4.708 0" />
+                    </svg>
+                    
+                    <!-- Prompt Input -->
+                    <input type="text" id="gemini-prompt" class="flex-grow p-2 bg-transparent focus:outline-none text-gray-800" placeholder="Enter a prompt for Gemini">
+                    
+                    <!-- Plus Button -->
+                    <button class="text-gray-600 hover:text-gray-900 p-1 rounded-full">
+                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                    </button>
+                    
+                    <!-- Canvas/File Button -->
+                    <button class="flex items-center space-x-1.5 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full hover:bg-blue-200">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9.75h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5-13.5h16.5M3.75 6a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21.75 6v12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 18V6Z" />
+                        </svg>
+                        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    
+                    <!-- Model Selector (Simplified) -->
+                    <div class="text-gray-700 font-medium text-sm pr-2 flex items-center cursor-pointer">
+                        2.5 Pro
+                        <svg class="w-4 h-4 inline-block text-gray-500 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button id="gemini-button" class="bg-blue-100 text-blue-600 p-2.5 rounded-full hover:bg-blue-200 transition-colors disabled:bg-gray-400 mr-1">
+                         <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <rect width="12" height="12" x="6" y="6" rx="2" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Results/Loading Area -->
+                <div id="gemini-status" class="mt-4 text-gray-600 h-6"></div>
+                
+                <!-- Results Container -->
+                <div id="gemini-results" class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 prose max-w-none prose-p:my-2 prose-li:my-1">
+                    <!-- Gemini search results will be injected here -->
+                </div>
+            </div>
+
+        </div> <!-- End Main Content Card -->
+    </div> <!-- End Max-width container -->
+
+    <!-- Main JavaScript Logic -->
+    <script type="module">
+        // --- COMMON ---
+        const API_KEY = "AIzaSyDG_NRgAL1wh1FD7QZJ1DlmLFti-st14Pk"; // Leave as-is, will be handled by the environment
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${API_KEY}`;
+        
+        // --- SECTION 1: AI CHAT (WITH GOOGLE SEARCH) ---
+        
+        const promptInput = document.getElementById('gemini-prompt');
+        const askButton = document.getElementById('gemini-button');
+        const resultsDiv = document.getElementById('gemini-results');
+        const statusDiv = document.getElementById('gemini-status');
+        
+        /**
+         * Main function to call the Gemini API with Google Search
+         */
+        async function callGeminiSearchAPI() {
+            const userQuery = promptInput.value;
+            if (!userQuery) {
+                statusDiv.textContent = "Please enter a prompt.";
+                return;
+            }
+
+            askButton.disabled = true;
+            statusDiv.textContent = "Asking Gemini... please wait.";
+            resultsDiv.innerHTML = "";
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                // This 'tools' section enables Google Search grounding
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: "You are a helpful AI assistant. Answer the user's question based on the provided search results." }]
+                },
+            };
+
+            try {
+                const response = await fetchWithRetry(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    const text = candidate.content.parts[0].text;
+                    
+                    // 1. Process and display the main text (simple markdown to HTML)
+                    let htmlContent = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
+                    htmlContent = htmlContent.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italics
+                    htmlContent = htmlContent.replace(/\n/g, '<br>'); // Newlines
+                    resultsDiv.innerHTML = htmlContent;
+
+                    // 2. Extract and display grounding sources
+                    const groundingMetadata = candidate.groundingMetadata;
+                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                        const sources = groundingMetadata.groundingAttributions
+                            .map(attr => attr.web)
+                            .filter(web => web && web.uri && web.title); // Filter for valid web sources
+                        
+                        if (sources.length > 0) {
+                            const sourcesHtml = sources.map((source, index) => 
+                                `<li><a href="${source.uri}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${source.title}</a></li>`
+                            ).join('');
+                            resultsDiv.innerHTML += `
+                                <hr class="my-4">
+                                <h4 class="font-semibold text-gray-800">Sources:</h4>
+                                <ul class="list-disc list-inside mt-2">
+                                    ${sourcesHtml}
+                                </ul>`;
+                        }
+                    }
+                } else {
+                    resultsDiv.textContent = "Sorry, I couldn't get a response. The API returned an unexpected format.";
+                    console.error("Unexpected API response:", result);
+                }
+
+            } catch (error) {
+                resultsDiv.innerHTML = `<span class="text-red-500"><strong>Error:</strong> ${error.message}. Please check the console for details.</span>`;
+                console.error("Error calling Gemini API:", error);
+            } finally {
+                // Reset UI from loading state
+                askButton.disabled = false;
+                statusDiv.textContent = "";
+            }
+        }
+ 
+        // --- Event Listeners for AI Chat ---
+        
+        askButton.addEventListener('click', callGeminiSearchAPI);
+        
+        promptInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // Prevent new line
+                callGeminiSearchAPI();
+            }
+        });
+
+
+        // --- SECTION 2: AI WRITING TOOLS ---
+ 
+        const toolButtons = document.querySelectorAll('.tool-button');
+        const writerStatus = document.getElementById('writer-status');
+        const generateButton = document.getElementById('generate-button');
+        const inputText = document.getElementById('input-text');
+        const outputText = document.getElementById('output-text');
+        const copyButton = document.getElementById('copy-button');
+        const aiChatButton = document.getElementById('ai-chat-button');
+        const aiWriterSection = document.getElementById('ai-writer-section');
+        const aiChatSection = document.getElementById('ai-chat-section');
+
+        let selectedTool = null; // e.g., 'paraphrase', 'grammar', etc.
+        let activeToolButton = null;
+
+        const toolPrompts = {
+            'paraphrase': 'You are a paraphrasing tool. Rewrite the following text to convey the same meaning but with different wording. Be clear and concise.',
+            'grammar': 'You are a grammar checker. Correct any and all grammatical errors, spelling mistakes, and punctuation issues in the following text. Only output the corrected text.',
+            'detector': 'You are an AI text detector. Analyze the following text and determine if it was likely written by an AI or a human. Provide a brief analysis and a confidence score (e.g., "Likely AI-generated (90% confidence)").',
+            'plagiarism': 'You are a plagiarism checker. Analyze the following text and state whether it appears to be original or contains plagiarism. This is a simulation; do not search the web. Base your answer on patterns in the text.',
+            'humanizer': 'You are an AI text humanizer. Rewrite the following text to make it sound more natural, engaging, and human-written. Adjust the tone, sentence structure, and word choice.',
+            'translate': 'You are a translation tool. Detect the language of the following text and translate it into English. If it is already in English, translate it into French.',
+            'summarize': 'You are a summarization tool. Provide a concise summary of the following text, capturing the main points.'
+        };
+
+        /**
+         * Handle tool button clicks
+         */
+        toolButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tool = button.dataset.tool;
+
+                // Special case: 'AI Chat' button scrolls to the chat section
+                if (tool === 'chat') {
+                    aiChatSection.scrollIntoView({ behavior: 'smooth' });
+                    // Optional: highlight the section temporarily
+                    aiChatSection.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2', 'transition-all', 'duration-300', 'rounded-lg');
+                    setTimeout(() => {
+                        aiChatSection.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2', 'transition-all', 'duration-300', 'rounded-lg');
+                    }, 1500);
+                    return;
+                }
+
+                // --- Handle all other tool buttons ---
+                
+                // Remove 'active' state from the previously selected button
+                if (activeToolButton) {
+                    activeToolButton.classList.remove('active');
+                }
+
+                // Set new active tool
+                selectedTool = tool;
+                activeToolButton = button;
+                activeToolButton.classList.add('active');
+
+                // Optional: Scroll back to the text area if user is lower on page
+                inputText.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+
+        /**
+         * Handle "Generate" button click for AI Writing Tools
+         */
+        generateButton.addEventListener('click', async () => {
+            const text = inputText.value;
+
+            if (!selectedTool) {
+                writerStatus.textContent = "Please select a tool first.";
+                return;
+            }
+            if (!text) {
+                writerStatus.textContent = "Please enter some text in the input box.";
+                return;
+            }
+
+            generateButton.disabled = true;
+            generateButton.textContent = "Generating...";
+            writerStatus.textContent = `Using ${selectedTool} tool...`;
+            outputText.value = ""; // Clear previous output
+
+            const systemPrompt = toolPrompts[selectedTool];
+            const payload = {
+                contents: [{ parts: [{ text: text }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            try {
+                const response = await fetchWithRetry(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    outputText.value = candidate.content.parts[0].text;
+                } else {
+                    outputText.value = "Sorry, I couldn't get a response. The API returned an unexpected format.";
+                    console.error("Unexpected API response:", result);
+                }
+
+            } catch (error) {
+                outputText.value = `Error: ${error.message}. Please check the console for details.`;
+                console.error("Error calling Gemini API:", error);
+            } finally {
+                generateButton.disabled = false;
+                generateButton.textContent = "Generate";
+                writerStatus.textContent = "";
+            }
+        });
+
+        /**
+         * Handle "Copy" button click
+         */
+        copyButton.addEventListener('click', () => {
+            // Modern clipboard API (preferred)
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(outputText.value).then(() => {
+                    copyButton.textContent = "Copied!";
+                    copyButton.classList.add('copied');
+                    setTimeout(() => {
+                        copyButton.textContent = "Copy";
+                        copyButton.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy with modern API: ', err);
+                    fallbackCopyText(); // Fallback for http or permissions issues
+                });
+            } else {
+                fallbackCopyText(); // Fallback for older browsers
+            }
+        });
+        
+        /**
+         * Fallback copy method for older browsers or insecure contexts
+         */
+        function fallbackCopyText() {
+            try {
+                // Select the text field
+                outputText.select();
+                outputText.setSelectionRange(0, 99999); // For mobile devices
+        
+                // Copy the text inside the text field
+                const successful = document.execCommand('copy');
+                
+                if (successful) {
+                    copyButton.textContent = "Copied!";
+                    copyButton.classList.add('copied');
+                    setTimeout(() => {
+                        copyButton.textContent = "Copy";
+                        copyButton.classList.remove('copied');
+                    }, 2000);
+                } else {
+                    throw new Error('Fallback copy was unsuccessful');
+                }
+                
+                // Deselect the text
+                window.getSelection()?.removeAllRanges();
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+                alert('Failed to copy text. Please copy manually.');
+            }
+        }
+
+        // --- COMMON HELPER: fetchWithRetry ---
+        
+        /**
+         * Fetches a resource with exponential backoff.
+         * @param {string} url The URL to fetch.
+         * @param {object} options The fetch options.
+         * @param {number} maxRetries Maximum number of retries.
+         * @param {number} baseDelay Base delay in ms for backoff.
+         * @returns {Promise<Response>}
+         */
+        async function fetchWithRetry(url, options, maxRetries = 5, baseDelay = 1000) {
+            let attempt = 0;
+            while (attempt < maxRetries) {
+                try {
+                    const response = await fetch(url, options);
+                    
+                    // Check for rate-limiting or server errors
+                    if (response.status === 429 || response.status >= 500) {
+                        throw new Error(`Server error: ${response.status}`);
+                    }
+                    
+                    // If response is OK, return it
+                    return response;
+                    
+                } catch (error) {
+                    attempt++;
+                    if (attempt >= maxRetries) {
+                        console.error("Max retries reached. Failing request.", error);
+                        throw error; // Throw the last error
+                    }
+                    
+                    // Calculate delay with jitter
+                    const delay = baseDelay * (2 ** attempt) + Math.random() * 1000;
+                    // Do not log retry attempts to the console as errors
+                    // console.log(`Attempt ${attempt} failed. Retrying in ${delay.toFixed(0)}ms...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+            // This line should not be reachable, but as a safeguard:
+            throw new Error("Fetch failed after all retries.");
+        }
+
+    </script>
+</body>
+</html>
+
